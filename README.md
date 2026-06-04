@@ -1,17 +1,17 @@
-# Analisis Big Data Komunitas Clash Royale & AI Chatbot Terintegrasi RAG
+# Analisis Big Data Komunitas Clash Royale : Transformasi Ribuan Komentar Menjadi Insight Real-Time Menggunakan Kecerdasan Web & AI
 
 > **Proyek Akhir Mata Kuliah Kecerdasan Web dan Big Data** > **Departemen Teknik Komputer, Institut Teknologi Sepuluh Nopember (ITS)**
 
 ---
 
-## 📌 Deskripsi Proyek
+## Deskripsi Proyek
 Proyek ini membangun sebuah ekosistem *data engineering* berskala besar yang berfungsi untuk melakukan *crawling* otomatis, analisis sentimen, klasifikasi topik, dan ekstraksi keluhan kritis secara *real-time* dari komunitas game **Clash Royale** di 4 kanal YouTube terkemuka (*Clash Royale Official, Orange Juice, B-rad, dan SirTag*). 
 
 Sistem ini mengintegrasikan pipa data otomatis (*automated data pipeline*) dengan arsitektur **RAG (Retrieval-Augmented Generation)** menggunakan LLM kelas berat untuk melayani pertanyaan analitis pengguna/dosen melalui **Bot Telegram**. Seluruh ekosistem dikemas menggunakan **Docker Compose** dan diamankan jalurnya dengan **Ngrok Static Domain** agar dapat berjalan secara mandiri (*self-hosted*) di latar belakang sejak komputer dinyalakan.
 
 ---
 
-## 🏗️ Arsitektur Sistem & Alur Data
+## Arsitektur Sistem & Alur Data
 
 Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independen namun terhubung pada database yang sama:
 
@@ -25,7 +25,7 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 
 ---
 
-## 🚀 Fitur Utama
+## Fitur Utama
 
 1. **Multi-Channel Scraper Otomatis:** Menambang ribuan komentar secara berkala dari 4 kanal YouTube berbeda secara simultan tanpa duplikasi data.
 2. **AI Multiclass Classification:** Mengklasifikasikan komentar secara otomatis menggunakan LLM ke dalam 3 dimensi data:
@@ -38,7 +38,7 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 
 ---
 
-## 🛠️ Spesifikasi Teknologi (Tech Stack)
+## Spesifikasi Teknologi (Tech Stack)
 
 * **Orkestrasi & Otomatisasi:** n8n v1.x (Workflow-driven automation)
 * **Database NoSQL:** MongoDB v6.x (Skema fleksibel untuk menampung JSON hasil analisis AI)
@@ -51,7 +51,7 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 
 ---
 
-## 📂 Struktur Repositori
+## Struktur Repositori
 
 * `docker-compose.yml` : Konfigurasi container n8n, MongoDB, Metabase, dan Ngrok
 * `.gitignore` : Proteksi kredensial agar tidak ter-push ke publik
@@ -64,7 +64,7 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 
 ---
 
-## 🔧 Panduan Instalasi & Pengoperasian
+## Panduan Instalasi & Pengoperasian
 
 ### 1. Setup File Konfigurasi
 Buat file `docker-compose.yml` di direktori proyek, lalu gunakan konfigurasi multi-container berikut:
@@ -132,7 +132,7 @@ Ekosistem akan otomatis berjalan di latar belakang dan tersetel untuk otomatis m
 
 ---
 
-## 📈 Rekayasa Pipa Data & Implementasi Kode (Engineering Deep Dive)
+## Rekayasa Pipa Data & Implementasi Kode (Engineering Deep Dive)
 
 ### 1. Sinkronisasi Data Lintas Kumpulan & Pembersihan Data Kotor (MongoDB Node)
 
@@ -229,7 +229,7 @@ try {
 
 ---
 
-## 🎯 Filter Data Cleansing (Metabase Dashboard)
+## Filter Data Cleansing (Metabase Dashboard)
 
 Untuk menyelaraskan antara data mentah hasil penambangan kotor (*noise*) dengan visualisasi grafik eksekutif, dipasang kriteria saringan di Metabase pada panel **Keluhan Kritis**:
 
@@ -239,7 +239,7 @@ Untuk menyelaraskan antara data mentah hasil penambangan kotor (*noise*) dengan 
 
 ---
 
-## 👥 Tim Pengembang
+## Tim Pengembang
 
 * **Nama:** Muhammad Jaysyurrahman
 * **NRP:** 5024231057
