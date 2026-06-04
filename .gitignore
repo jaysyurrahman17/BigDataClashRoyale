@@ -1,0 +1,12 @@
+# Mengabaikan file environment dan database
+.env
+*.db
+*.csv
+*.json
+
+# Mengabaikan folder cache jika ada
+node_modules/
+.n8n/
+
+# Mengabaikan file aplikasi
+*.exe

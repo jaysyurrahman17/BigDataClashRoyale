@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n_app
+    environment:
+      - WEBHOOK_URL=https://gradation-undertake-perish.ngrok-free.dev  
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: always
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase_data:/metabase.db
+    restart: always
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok_tunnel
+    restart: always
+    environment:
+      - NGROK_AUTHTOKEN=3ER0fPg0OFCO9HZwLcR4lhqHLRK_4ojGZHc25EC5QY2C6pip2
+    command: http --domain=gradation-undertake-perish.ngrok-free.dev n8n:5678
+    depends_on:
+      - n8n
+
+volumes:
+  n8n_data:
+  mongodb_data:
+  metabase_data:
