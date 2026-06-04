@@ -1,0 +1,195 @@
+{
+  "name": "Bot Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e3bbda30-f9ee-4c09-bc06-8ae4a5dc4e34",
+      "name": "Telegram Trigger",
+      "webhookId": "73b84b57-dc97-48c8-b724-8ad0b689e337",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hstas34VtrsAkY4z",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "aggregate",
+        "collection": "komentar_official",
+        "query": "=[\n  { \"$unionWith\": { \"coll\": \"komentar_oj\" } },\n  { \"$unionWith\": { \"coll\": \"komentar_brad\" } },\n  { \"$unionWith\": { \"coll\": \"komentar_sirtag\" } },\n  {\n    \"$facet\": {\n      \"total_komentar\": [\n        { \"$match\": { \"sentimen_mayoritas\": { \"$in\": [\"Positif\", \"Negatif\", \"Netral\"] } } },\n        { \"$count\": \"hitung\" }\n      ],\n      \"analisis_sentimen\": [\n        { \"$match\": { \"sentimen_mayoritas\": { \"$in\": [\"Positif\", \"Negatif\", \"Netral\"] } } },\n        { \"$group\": { \"_id\": \"$sentimen_mayoritas\", \"jumlah\": { \"$sum\": 1 } } }\n      ],\n      \"kategori_komentar\": [\n        { \"$match\": { \"kategori_komentar\": { \"$in\": [\"Keluhan/Nerf\", \"Hiburan\", \"Strategi\"] } } },\n        { \"$group\": { \"_id\": \"$kategori_komentar\", \"jumlah\": { \"$sum\": 1 } } },\n        { \"$sort\": { \"jumlah\": -1 } }\n      ],\n      \"kartu_top\": [\n        { \"$match\": { \"kartu_terpopuler\": { \"$nin\": [\"Tidak Ada\", null, \"\", \"-\"] } } },\n        { \"$group\": { \"_id\": \"$kartu_terpopuler\", \"jumlah\": { \"$sum\": 1 } } },\n        { \"$sort\": { \"jumlah\": -1 } },\n        { \"$limit\": 10 }\n      ],\n      \"rata_frustrasi\": [\n        { \"$match\": { \"sentimen_mayoritas\": { \"$in\": [\"Positif\", \"Negatif\", \"Netral\"] } } },\n        { \n          \"$group\": { \n            \"_id\": null, \n            \"skala\": { \"$avg\": { \"$ifNull\": [\"$tingkat_frustrasi\", 0] } } \n          } \n        }\n      ]\n    }\n  }\n]"
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a0a5068a-487d-41b1-9734-f09c761dbe82",
+      "name": "Aggregate documents",
+      "credentials": {
+        "mongoDb": {
+          "id": "EDDQCfUoYBvpVOOb",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.teks_balasan }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "11473550-aa92-47eb-b897-e548f1fc9466",
+      "name": "Send a text message",
+      "webhookId": "903278ec-82da-4582-94b9-d67d667ed2d7",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hstas34VtrsAkY4z",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let data = $input.first().json;\nlet text = \"DATA STATISTIK CLASH ROYALE:\\n\";\n\n// 1. Total Komentar\nlet total = data.total_komentar[0]?.hitung || 0;\ntext += `- Total Seluruh Komentar: ${total}\\n\\n`;\n\n// 2. Kategori Komentar (Dihitung otomatis)\ntext += `- Kategori Komentar (Ranking dari terbesar):\\n`;\nlet kategori = data.kategori_komentar.sort((a,b) => b.jumlah - a.jumlah);\nkategori.forEach((k, index) => {\n    let persentase = ((k.jumlah / total) * 100).toFixed(1);\n    text += `  ${index + 1}. ${k._id || 'Lainnya'} (${k.jumlah} komentar, ${persentase}%)\\n`;\n});\ntext += `\\n`;\n\n// 3. Topik / Kartu\ntext += `- Topik/Kartu Terpopuler (Ranking):\\n`;\ndata.kartu_top.forEach((k, index) => {\n    text += `  ${index + 1}. ${k._id} (${k.jumlah} sebutan)\\n`;\n});\ntext += `\\n`;\n\n// 4. Sentimen\ntext += `- Analisis Sentimen:\\n`;\ndata.analisis_sentimen.forEach(s => {\n    let persentase = ((s.jumlah / total) * 100).toFixed(1);\n    text += `  * ${s._id || 'Netral'}: ${s.jumlah} komentar (${persentase}%)\\n`;\n});\ntext += `\\n`;\n\n// 5. Frustrasi\nlet frus = data.rata_frustrasi[0]?.skala || 0;\ntext += `- Tingkat Frustrasi Global: ${frus.toFixed(2)} / 10\\n`;\n\nreturn [{ json: { statistik_bersih: text } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "44101413-03ea-4e9b-8735-6b77925179b7",
+      "name": "Translator"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{\n  JSON.stringify({\n    \"model\": \"llama-3.3-70b-versatile\",\n    \"response_format\": { \"type\": \"json_object\" },\n    \"messages\": [\n      {\n        \"role\": \"system\",\n        \"content\": \"Anda adalah AI Analis Data Clash Royale yang sangat cerdas. Anda akan diberikan teks statistik. TUGAS ANDA: Jawab pertanyaan user dengan luwes, akurat 100%, dan HANYA menggunakan angka/persentase yang ada di teks statistik. DILARANG MELAKUKAN PERHITUNGAN MATEMATIKA SENDIRI. Dilarang menggunakan format asterisk (*). Output WAJIB JSON: { \\\"jawaban\\\": \\\"Teks jawaban Anda\\\" }\"\n      },\n      {\n        \"role\": \"user\",\n        \"content\": \"STATISTIK:\\n\" + $json.statistik_bersih + \"\\n\\nPERTANYAAN USER:\\n\" + $('Telegram Trigger').first().json.message.text + \"\\n\\nJawab pertanyaan secara langsung dan natural.\"\n      }\n    ]\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        624,
+        0
+      ],
+      "id": "415c2705-431f-403d-ba6b-f53a9b7153df",
+      "name": "Groq AI"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mengambil string jawaban mentah dari Groq\nlet rawText = $input.first().json.choices[0].message.content;\n\ntry {\n    // Mengubah string JSON menjadi objek asli\n    let finalData = JSON.parse(rawText);\n    \n    // Mencegah error Telegram dengan mengubah simbol * menjadi huruf x\n    let teksAman = finalData.jawaban.replace(/\\*/g, 'x');\n    \n    // Meneruskan HANYA teks jawabannya ke node selanjutnya\n    return [{ json: { teks_balasan: teksAman } }];\n} catch (e) {\n    return [{ json: { teks_balasan: \"Maaf, format balasan AI sedang gangguan.\" } }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "640d5d4b-475b-488b-b0e4-dad70a600ba6",
+      "name": "Answer"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Aggregate documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate documents": {
+      "main": [
+        [
+          {
+            "node": "Translator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translator": {
+      "main": [
+        [
+          {
+            "node": "Groq AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq AI": {
+      "main": [
+        [
+          {
+            "node": "Answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f4b07c82-ec7a-4d3c-af30-49085f28cf4d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "00993ada8605f2294c72e37ad2ea4751ff5310190eefc1e442b5f04fe739acfe"
+  },
+  "id": "d7a2PjHHeuSN1g2A",
+  "tags": []
+}

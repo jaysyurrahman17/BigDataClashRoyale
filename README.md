@@ -1,3 +1,4 @@
+
 ```markdown
 # Analisis Big Data Komunitas Clash Royale & AI Chatbot Terintegrasi RAG
 > **Proyek Akhir Mata Kuliah Kecerdasan Web dan Big Data**
@@ -6,7 +7,7 @@
 ---
 
 ## 📌 Deskripsi Proyek
-Proyek ini membangun sebuah ekosistem *data engineering* berskala besar yang berfungsi untuk melakukan *crawling* otomatis, analisis sentimen, klasifikasi topik, dan ekstraksi keluhan kritis secara *real-time* dari komunitas game **Clash Royale** di 4 kanal YouTube terkemuka (*Clash Royale Official, Orange Juice/komentar_oj, B-rad, dan SirTag*). 
+Proyek ini membangun sebuah ekosistem *data engineering* berskala besar yang berfungsi untuk melakukan *crawling* otomatis, analisis sentimen, klasifikasi topik, dan ekstraksi keluhan kritis secara *real-time* dari komunitas game **Clash Royale** di 4 kanal YouTube terkemuka (*Clash Royale Official, Orange Juice, B-rad, dan SirTag*). 
 
 Sistem ini mengintegrasikan pipa data otomatis (*automated data pipeline*) dengan arsitektur **RAG (Retrieval-Augmented Generation)** menggunakan LLM kelas berat untuk melayani pertanyaan analitis pengguna/dosen melalui **Bot Telegram**. Seluruh ekosistem dikemas menggunakan **Docker Compose** dan diamankan jalurnya dengan **Ngrok Static Domain** agar dapat berjalan secara mandiri (*self-hosted*) di latar belakang sejak komputer dinyalakan.
 
@@ -68,11 +69,14 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 ## 📂 Struktur Repositori
 
 ```text
-├── docker-compose.yml       # Konfigurasi container n8n, MongoDB, Metabase, dan Ngrok
-├── .gitignore               # Proteksi token API dan kredensial agar tidak ter-push
-├── README.md                # Laporan proyek akhir (File ini)
-├── Workflow_Crawler.json    # Backup workflow n8n untuk penambang data YouTube
-└── Workflow_Chatbot.json    # Backup workflow n8n untuk RAG Chatbot Telegram
+├── docker-compose.yml               # Konfigurasi container n8n, MongoDB, Metabase, dan Ngrok
+├── .gitignore                       # Proteksi kredensial agar tidak ter-push ke publik
+├── README.md                        # Laporan proyek akhir (File ini)
+├── Bot Telegram.json                # Backup workflow n8n untuk RAG Chatbot Telegram
+├── Crawler - B-rad Fix.json         # Backup workflow n8n untuk crawler channel B-rad
+├── Crawler - Clash Royale Fix.json   # Backup workflow n8n untuk crawler channel Clash Royale Official
+├── Crawler - Orange Juice Fix.json  # Backup workflow n8n untuk crawler channel Orange Juice (komentar_oj)
+└── Crawler - Sirtag Fix.json        # Backup workflow n8n untuk crawler channel Sirtag
 
 ```
 
@@ -251,6 +255,15 @@ Untuk menyelaraskan antara data mentah hasil penambangan kotor (*noise*) dengan 
 1. Mengisolasi `kategori_komentar` hanya pada nilai `Keluhan/Nerf`.
 2. Menerapkan ambang batas kritis tingkat frustrasi pada parameter `tingkat_frustrasi >= 8`.
 3. Mengeklusi meta-komentar halusinasi AI masa lalu dengan klausa kondisional mengecualikan teks (*Does not contain*): `"Komentar ini"`, `"Ditulis berdasarkan"`, serta mengeklusi pembahasan luar game seperti `"COC"`, `"Brawl Stars"`, dan `"Sprout"`.
+
+---
+
+## 👥 Tim Pengembang
+
+* **Nama:** Muhammad Jaysyurrahman
+* **NRP:** (Silakan isi NRP kamu di sini)
+* **Program Studi:** S1 Teknik Komputer
+* **Institusi:** Institut Teknologi Sepuluh Nopember (ITS)
 
 ```
 
