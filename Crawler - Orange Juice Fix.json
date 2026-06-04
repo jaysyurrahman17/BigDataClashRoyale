@@ -68,7 +68,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer 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"
+              "value": "Bearer MASUKKAN_GROQ_API_KEY_DISINI"
             }
           ]
         },

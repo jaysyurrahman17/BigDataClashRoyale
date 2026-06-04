@@ -1,8 +1,6 @@
-
-```markdown
 # Analisis Big Data Komunitas Clash Royale & AI Chatbot Terintegrasi RAG
-> **Proyek Akhir Mata Kuliah Kecerdasan Web dan Big Data**
-> **Departemen Teknik Komputer, Institut Teknologi Sepuluh Nopember (ITS)**
+
+> **Proyek Akhir Mata Kuliah Kecerdasan Web dan Big Data** > **Departemen Teknik Komputer, Institut Teknologi Sepuluh Nopember (ITS)**
 
 ---
 
@@ -18,21 +16,12 @@ Sistem ini mengintegrasikan pipa data otomatis (*automated data pipeline*) denga
 Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independen namun terhubung pada database yang sama:
 
 ### 1. Hulu: Automated Ingestion Pipeline (Jalur Penambangan Data)
-```text
-[Schedule Trigger] ➡️ [RSS Video Read] ➡️ [YouTube Data API v3]
-                                                  ⬇️ (Komentar Mentah)
-[MongoDB Storage] ⬅️ [Edit Fields] ⬅️ [JS Cleansing] ⬅️ [Groq AI (Llama 3.1 8B)]
-
-```
+* `[Schedule Trigger]` ➡️ `[RSS Video Read]` ➡️ `[YouTube Data API v3]`
+* `[Komentar Mentah]` ➡️ `[Groq AI (Llama 3.1 8B)]` ➡️ `[JS Cleansing]` ➡️ `[Edit Fields]` ➡️ `[MongoDB Storage]`
 
 ### 2. Hilir: Serving & RAG Chatbot Pipeline (Jalur Interaksi Bot)
-
-```text
-[Telegram User Chat] ➡️ [Telegram Trigger] ➡️ [MongoDB Pipeline Aggregation]
-                                                        ⬇️ ($unionWith & $facet)
-[Telegram Response] ⬅️ [Groq AI (Llama 3.3 70B)] ⬅️ [JS Data Flattening & Math]
-
-```
+* `[Telegram User Chat]` ➡️ `[Telegram Trigger]` ➡️ `[MongoDB Pipeline Aggregation ($unionWith & $facet)]`
+* `[JS Data Flattening & Math]` ➡️ `[Groq AI (Llama 3.3 70B)]` ➡️ `[Telegram Response]`
 
 ---
 
@@ -40,12 +29,10 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 
 1. **Multi-Channel Scraper Otomatis:** Menambang ribuan komentar secara berkala dari 4 kanal YouTube berbeda secara simultan tanpa duplikasi data.
 2. **AI Multiclass Classification:** Mengklasifikasikan komentar secara otomatis menggunakan LLM ke dalam 3 dimensi data:
-* **Sentimen:** Positif, Negatif, Netral.
-* **Kategori Komentar:** Keluhan/Nerf, Hiburan, Strategi.
-* **Topik/Kartu:** Mendeteksi entitas nama kartu (e.g., *Mega Knight, Electro Wizard, Firecracker*).
-* **Metrik Numerik:** Memberikan skor emosi berupa Skala Frustrasi Global (0-10).
-
-
+   * **Sentimen:** Positif, Negatif, Netral.
+   * **Kategori Komentar:** Keluhan/Nerf, Hiburan, Strategi.
+   * **Topik/Kartu:** Mendeteksi entitas nama kartu (e.g., *Mega Knight, Electro Wizard, Firecracker*).
+   * **Metrik Numerik:** Memberikan skor emosi berupa Skala Frustrasi Global (0-10).
 3. **Business Intelligence (BI) Dashboard:** Visualisasi data real-time menggunakan **Metabase** untuk memantau polarisasi sentimen, tren popularitas kartu, dan grafik *gauge* untuk tingkat frustrasi komunitas.
 4. **Zero-Hallucination RAG Chatbot:** Bot Telegram analitis yang dibekali konteks data dari 4.500+ baris data MongoDB. Menggunakan teknik *separation of concerns* (matematika dihitung deterministik oleh JavaScript, nalar bahasa diproses oleh LLM).
 
@@ -57,10 +44,8 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 * **Database NoSQL:** MongoDB v6.x (Skema fleksibel untuk menampung JSON hasil analisis AI)
 * **Business Intelligence:** Metabase (Native Query & Interactive Dashboard)
 * **Mesin Inferensi AI:** Groq Cloud API
-* *Model Crawler:* `llama-3.1-8b-instant` (Komputasi cepat untuk klasifikasi massal)
-* *Model Chatbot:* `llama-3.3-70b-versatile` (Penalaran bahasa tingkat tinggi untuk menjawab pertanyaan analitis)
-
-
+  * *Model Crawler:* `llama-3.1-8b-instant` (Komputasi cepat untuk klasifikasi massal)
+  * *Model Chatbot:* `llama-3.3-70b-versatile` (Penalaran bahasa tingkat tinggi untuk menjawab pertanyaan analitis)
 * **Infrastruktur & Jaringan:** Docker Desktop, Docker Compose, Ngrok Tunneling (Static Dev Domain)
 * **Bahasa Pemrograman / Scripting:** JavaScript (ES6+) untuk *data pre-processing* dan *flattening* di n8n.
 
@@ -68,24 +53,20 @@ Ekosistem ini terbagi menjadi dua sub-sistem utama yang bekerja secara independe
 
 ## 📂 Struktur Repositori
 
-```text
-├── docker-compose.yml               # Konfigurasi container n8n, MongoDB, Metabase, dan Ngrok
-├── .gitignore                       # Proteksi kredensial agar tidak ter-push ke publik
-├── README.md                        # Laporan proyek akhir (File ini)
-├── Bot Telegram.json                # Backup workflow n8n untuk RAG Chatbot Telegram
-├── Crawler - B-rad Fix.json         # Backup workflow n8n untuk crawler channel B-rad
-├── Crawler - Clash Royale Fix.json   # Backup workflow n8n untuk crawler channel Clash Royale Official
-├── Crawler - Orange Juice Fix.json  # Backup workflow n8n untuk crawler channel Orange Juice (komentar_oj)
-└── Crawler - Sirtag Fix.json        # Backup workflow n8n untuk crawler channel Sirtag
-
-```
+* `docker-compose.yml` : Konfigurasi container n8n, MongoDB, Metabase, dan Ngrok
+* `.gitignore` : Proteksi kredensial agar tidak ter-push ke publik
+* `README.md` : Laporan proyek akhir (File ini)
+* `Bot Telegram.json` : Backup workflow n8n untuk RAG Chatbot Telegram
+* `Crawler - B-rad Fix.json` : Backup workflow n8n untuk crawler channel B-rad
+* `Crawler - Clash Royale Fix.json` : Backup workflow n8n untuk crawler channel Clash Royale Official
+* `Crawler - Orange Juice Fix.json` : Backup workflow n8n untuk crawler channel Orange Juice (komentar_oj)
+* `Crawler - Sirtag Fix.json` : Backup workflow n8n untuk crawler channel Sirtag
 
 ---
 
 ## 🔧 Panduan Instalasi & Pengoperasian
 
 ### 1. Setup File Konfigurasi
-
 Buat file `docker-compose.yml` di direktori proyek, lalu gunakan konfigurasi multi-container berikut:
 
 ```yaml
@@ -261,7 +242,7 @@ Untuk menyelaraskan antara data mentah hasil penambangan kotor (*noise*) dengan 
 ## 👥 Tim Pengembang
 
 * **Nama:** Muhammad Jaysyurrahman
-* **NRP:** (Silakan isi NRP kamu di sini)
+* **NRP:** 5024231057
 * **Program Studi:** S1 Teknik Komputer
 * **Institusi:** Institut Teknologi Sepuluh Nopember (ITS)
 
