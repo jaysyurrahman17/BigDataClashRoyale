@@ -1,4 +1,4 @@
-# Analisis Big Data Komunitas Clash Royale : Transformasi Ribuan Komentar Menjadi Insight Real-Time Menggunakan Kecerdasan Web & AI
+# Analisis Big Data Komunitas Clash Royale
 
 > **Proyek Akhir Mata Kuliah Kecerdasan Web dan Big Data** > **Departemen Teknik Komputer, Institut Teknologi Sepuluh Nopember (ITS)**
 
